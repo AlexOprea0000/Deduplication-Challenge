@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deduplication Challenge", "Deduplication Challenge\Deduplication Challenge.pyproj", "{C3E338C0-2B82-4912-BD88-9077A2AA1854}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3E338C0-2B82-4912-BD88-9077A2AA1854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E338C0-2B82-4912-BD88-9077A2AA1854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C277A66-4C98-4E37-97E1-E92A33695747}
+	EndGlobalSection
+EndGlobal
