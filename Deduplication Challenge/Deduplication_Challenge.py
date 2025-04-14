@@ -4,7 +4,7 @@ def merge_urls_keep_longest(group):
     group_non_na = group.dropna(subset=["description"])
     
     if not group_non_na.empty:
-        idx_longest = group_non_na["description"].str.len().idxmax() # Remember the index of the longest description
+        idx_longest = group_non_na["description"].str.len().idxmax() # Return the index of the longest description
     else:
         idx_longest = group.index[0]  # fallback if all descriptions are NaN
 
