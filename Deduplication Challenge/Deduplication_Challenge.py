@@ -17,6 +17,11 @@ def merge_urls_keep_longest(group):
     # Merge URLs: include all distinct urls, avoid duplicates
     merged_urls = set(all_urls)
     merged_urls_string = ", ".join(sorted(merged_urls))
+    # Merge root_domain
+    all_domains = group["root_domain"].dropna().unique().tolist()
+    merged_domains = set(all_domains)
+    merged_domains_string = ", ".join(sorted(merged_domains))
+    main_row["root_domain"] = merged_domains_string
 
     # Assign the merged URLs to the row
     main_row["page_url"] = merged_urls_string
