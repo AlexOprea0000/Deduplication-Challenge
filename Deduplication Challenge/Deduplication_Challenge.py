@@ -1,4 +1,5 @@
 import pandas as pd
+from sentence_transformers import SentenceTransformer, util
 def merge_urls_keep_longest(group):
     # Drop empty descriptiond to apply idmax function
     group_non_na = group.dropna(subset=["description"])
