@@ -30,47 +30,51 @@ def merge_urls_keep_longest(group):
     return main_row
 model = SentenceTransformer("all-MiniLM-L6-v2")  # Only load once globally
 def merge_group_by_description_similarity(group, threshold=0.85):
-    group = group.dropna(subset=["description"]).copy()
+     # Separate rows with and without description
+ group_with_desc = group.dropna(subset=["description"]).copy()
+ group_without_desc = group[group["description"].isna()].copy()
 
-    if group.empty:
-        return pd.DataFrame(columns=group.columns)
+ if group_with_desc.empty:
+     return group_without_desc  # Nothing to deduplicate, just return missing-description rows
 
-    descriptions = group["description"].tolist()
-    embeddings = model.encode(descriptions, convert_to_tensor=True)
+ descriptions = group_with_desc["description"].tolist()
+ embeddings = model.encode(descriptions, convert_to_tensor=True)
 
-    used = set()
-    result_rows = []
+ used = set()
+ result_rows = []
 
-    for i in range(len(group)):
-        if i in used:
-            continue
+ for i in range(len(group_with_desc)):
+     if i in used:
+         continue
 
-        duplicates = [i]
-        for j in range(i + 1, len(group)):
-            if j in used:
-                continue
-            sim = util.cos_sim(embeddings[i], embeddings[j]).item()
-            if sim >= threshold:
-                duplicates.append(j)
-                used.add(j)
+     duplicates = [i]
+     for j in range(i + 1, len(group_with_desc)):
+         if j in used:
+             continue
+         sim = util.cos_sim(embeddings[i], embeddings[j]).item()
+         if sim >= threshold:
+             duplicates.append(j)
+             used.add(j)
 
-        used.add(i)
+     used.add(i)
 
-        # Among duplicates, keep the one with the longest description
-        duplicate_group = group.iloc[duplicates]
-        idx_longest = duplicate_group["description"].str.len().idxmax()
-        main_row = group.loc[[idx_longest]].copy()
+     # Among duplicates, keep the one with the longest description
+     duplicate_group = group_with_desc.iloc[duplicates]
+     idx_longest = duplicate_group["description"].str.len().idxmax()
+     main_row = group_with_desc.loc[[idx_longest]].copy()
 
-        # Merge URLs and domains
-        all_urls = duplicate_group["page_url"].dropna().unique()
-        all_domains = duplicate_group["root_domain"].dropna().unique()
+     # Merge URLs and domains
+     all_urls = duplicate_group["page_url"].dropna().unique()
+     all_domains = duplicate_group["root_domain"].dropna().unique()
 
-        main_row["page_url"] = ", ".join(sorted(set(all_urls)))
-        main_row["root_domain"] = ", ".join(sorted(set(all_domains)))
+     main_row["page_url"] = ", ".join(sorted(set(all_urls)))
+     main_row["root_domain"] = ", ".join(sorted(set(all_domains)))
 
-        result_rows.append(main_row)
+     result_rows.append(main_row)
 
-    return pd.concat(result_rows, ignore_index=True)
+ # Combine processed rows + rows with null descriptions
+ final_df = pd.concat(result_rows + [group_without_desc], ignore_index=True)
+ return final_df
 
 filename=r'C:\Users\Alex\Desktop\learning_log_trying\veridion_product_deduplication_challenge.snappy.parquet'
 df = pd.read_parquet(filename, engine="pyarrow")
